@@ -1,64 +1,88 @@
 <div align="center">
-  <img src="logoDiscord.png" height="200"> </img>
+  <img src="logoDiscord.png" height="200" />
 </div>
 
-<h1 align="center">
-  Discord Bot Manager
-</h1>
+# Discord Bot Manager
 
+## What is this?
+The Discord Bot Manager is a terminal-based program that simplifies the process of creating Discord bots for users who may not be familiar with programming.
 
-### what is this?
-the discord bot manager is a program that runs in the terminal
-### what does it do?
-the discord bot manager gives people who aren't used to making bots in programming the chance to make simple ones
-### is it free? 
-100% free
-### note there is only a Windows build and a Linux/mac will not be released probably
+## What does it do?
+It provides an easy way for individuals to create simple Discord bots without extensive programming knowledge.
 
-# how to install
-Could you download the latest zip file in the releases and ensure it is the latest one?
+## Is it free? 
+Yes, the Discord Bot Manager is 100% free!
 
-Choose where you want to install it, it doesn't matter but I recommend in c:
+> **Note:** Currently, there is only a Windows build available, and a Linux or macOS version is unlikely to be released.
 
-extract the whole zip file to your selected place
+---
 
-### Great! Now you have it installed what you want to do next is create an environment var to open the exe easily from the terminal.
+## How to Install
 
-Open the search in the bottom left of your computer (it could be the bottom right)
+1. **Download the latest release:**
+   - Go to the [releases page](https://github.com/your-repo/releases) and download the latest ZIP file.
 
-Search and edit the system's environmental variables.
+2. **Choose your installation location:**
+   - You can install it anywhere, but it's recommended to use the `C:` drive for convenience.
 
-Open that then you're gonna see a window of settings.
+3. **Extract the ZIP file:**
+   - Extract the entire contents of the ZIP file to your chosen location.
 
-Don't touch anything you do not need to just follow these instructions:
+### Set Up Environment Variable
+Now that you have installed the Discord Bot Manager, create an environment variable for easy access from the terminal:
 
-At the bottom of the window click environmental variables.
+1. **Open System Properties:**
+   - Search for "Environment Variables" in the search bar (located in the bottom left or right of your computer).
 
-You are gonna see a lot of things you do not understand, in the bottom part of the window under system variables find a variable named path and double-click it
+2. **Open Environment Variables:**
+   - Click on "Edit the system environment variables."
 
-this is gonna open a new window with all the paths there    
+3. **Access System Variables:**
+   - In the System Properties window, click on the "Environment Variables" button at the bottom.
 
-Copy the path of where you installed the Discord bot manager.
+4. **Modify the Path Variable:**
+   - In the "System variables" section, locate the `Path` variable and double-click it.
 
-In the paths window click new in the top right then copy your path to the folder where the exe is located. 
+5. **Add New Path:**
+   - In the "Edit Environment Variable" window, click "New" and paste the path to the folder where you extracted the Discord Bot Manager.
 
-Once it's done click ok and you can close all the tabs.
+6. **Confirm Changes:**
+   - Click "OK" to close all dialog boxes.
 
-To run it just type in the cmd discordbot.exe
+### Running the Application
+To run the application, open the command prompt:
 
-### and boom! You have it installed. 
+- Search for `cmd` in the search bar.
+- Type `discordbot.exe` and hit Enter.
 
-# How to use it?
-The program is self-explanatory but to open the exe all you gotta do is open the command prompt of Windows by searching cmd in the search bar and opening it then typing discord bot in the terminal and the program shall open.
+And just like that, you have successfully installed the Discord Bot Manager!
 
-# FAQ
+---
+
+## How to Use It
+The program is self-explanatory. Simply open the command prompt (CMD) and type `discordbot.exe` to launch the application.
+
+---
+
+## FAQ
+
 ### How do I create a bot with its token?
-follow [this](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) guide by discord.js
-### How do I get a guild ID or channel ID
-first of all make sure you have developer mode in Discord enabled by opening settings, app settings section, and advanced and turning on developer mode.
-then click your discord server and select copy server id, that's your guild IDhttps://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
-click your channel and select copy channel id, that's channel id
-### issue format?
-your name:
-issue:
+Follow the [official Discord.js guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) to create your bot application.
+
+### How do I get a Guild ID or Channel ID?
+1. **Enable Developer Mode:**
+   - In Discord, go to `User Settings` > `Advanced`, and turn on `Developer Mode`.
+
+2. **Get Guild ID:**
+   - Right-click on your server name and select "Copy Server ID." This is your Guild ID.
+
+3. **Get Channel ID:**
+   - Right-click on the channel name and select "Copy Channel ID." This is your Channel ID.
+
+### Issue Format
+If you encounter issues, please use the following format to report them:
+Your Name:
+
+Issue:
+
 how it happened:
