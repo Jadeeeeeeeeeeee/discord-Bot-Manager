@@ -13,7 +13,7 @@ It provides an easy way for individuals to create simple Discord bots without ex
 ## Is it free? 
 Yes, the Discord Bot Manager is 100% free!
 
-> **Note:** Currently, there is only a Windows build available, and a Linux or macOS version is unlikely to be released.
+> **Note:** Currently, there is only a Windows 10 and 11 build available, and a Linux or macOS version is unlikely to be released.
 
 ---
 
