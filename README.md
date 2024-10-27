@@ -9,7 +9,7 @@ The Discord Bot Manager is a terminal-based program that simplifies the process 
 
 ## What does it do?
 It provides an easy way for individuals to create simple Discord bots without extensive programming knowledge.
-> **Note:** Because this is a Terminal app without Servers its either you host the bot on youre computer with the host feature in the app or use a hosting providor like heroku
+> **Note:** Because this is a Terminal app without Servers its either you host the bot on your computer with the host feature in the app or use a hosting providor like heroku
 
 ## Is it free? 
 Yes, the Discord Bot Manager is 100% free!
