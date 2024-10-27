@@ -90,3 +90,6 @@ Your Name:
 Issue:
 
 how it happened:
+
+### Need Help
+i alone cannot make encryption so i need your help and contributions please to help me
