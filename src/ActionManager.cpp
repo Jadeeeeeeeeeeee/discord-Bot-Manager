@@ -19,13 +19,13 @@ void actionManager::MainManager() {
 		std::cout << "please select an action" << std::endl;
 		std::cout << "1. direct message, send a message through the bot" << std::endl;
 		std::cout << "2. manage Command's" << std::endl;
-		std::cout << "3. start host" << std::endl;
+		std::cout << "3. local host" << std::endl;
 		std::cout << "4. exit" << std::endl;;
 		std::cin >> input;
 		if (std::cin.fail()){
 			std::cin.clear();
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cout << "Invalid input, please enter a valid number." << std::endl;
+			std::cout << "--Invalid input, please enter a valid number." << std::endl;
 		}
 		if (input == 1) {
 			DirectInstence.SendDirect();
@@ -46,7 +46,7 @@ void actionManager::MainManager() {
 			exit(0);
 		}
 		else {
-			std::cout << "input incorrect" << std::endl;
+			std::cout << "--input incorrect" << std::endl;
 			continue;
 		}
 	}
