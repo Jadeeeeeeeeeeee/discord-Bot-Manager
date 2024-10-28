@@ -1,14 +1,14 @@
-#include "../include/ActionManager.h"
-#include "../include/backend.h"
 #include "../include/customCommands.h"
+#include "../include/backend.h"
+#include "../include/ActionManager.h"
 #include "dpp/dpp.h"
-#include <filesystem>
-#include <fstream>
 #include <iostream>
-#include <regex>
-#include <sstream>
-#include <string>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <regex>
+#include <filesystem>
 #include <Windows.h>
 Customs customInstence;
 
@@ -70,7 +70,7 @@ void Customs::deleteCommand() {
     customInstence.ReadFile();
 
     if (commandCalls.empty()) {
-        std::cout << "--No commands available to delete." << std::endl;
+        std::cout << "No commands available to delete." << std::endl;
         return;
     }
 
@@ -110,7 +110,7 @@ void Customs::deleteCommand() {
             CustomsWrite << "commandFunction " << i << ": " << commandActions[i] << std::endl;
         }
 
-        std::cout << "--Command deleted successfully." << std::endl;
+        std::cout << "Command deleted successfully." << std::endl;
         CustomsWrite.close();
     }
     else {
@@ -128,7 +128,7 @@ void Customs::FileCreate() {
         Customs.close();
     }
     else {
-        std::cerr << "--Unable to create command file" << std::endl;
+        std::cerr << "Unable to create command file" << std::endl;
     }
 }
 
