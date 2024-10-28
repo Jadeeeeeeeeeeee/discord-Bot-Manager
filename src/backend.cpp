@@ -1,14 +1,38 @@
 #include "../include/backend.h"
 #include "../include/ActionManager.h"
+#include "../include/encryption.h"
 #include <dpp/dpp.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <filesystem>
+#include <cstdlib> 
 #include <windows.h>
+#include <ctime>
+#include <limits>
+#include <random>
+#include <sddl.h>
+
 
 Backend backendInstence;
+
+std::string getRandomNumber() {
+    const std::string CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    std::random_device random_device;
+    std::mt19937 generator(random_device());
+    std::uniform_int_distribution<> distribution(0, CHARACTERS.size() - 1);
+
+    std::string random_string;
+
+    for (std::size_t i = 0; i < 72; ++i)
+    {
+        random_string += CHARACTERS[distribution(generator)];
+    }
+
+    return random_string;
+}
 
 std::string getAppDataFolderPath() {
     char* appDataPath;
@@ -16,17 +40,66 @@ std::string getAppDataFolderPath() {
     _dupenv_s(&appDataPath, &size, "APPDATA");
     std::string path(appDataPath);
     free(appDataPath);
-    return path + "\\discordBotManagerData";  // Change this as needed
+    return path + "\\discordBotManagerData";  
 }
 
-std::string folderPath = getAppDataFolderPath();  // Update folder path
+std::string folderPath = getAppDataFolderPath(); 
 
 std::string cutString(const std::string& a);
 
+#include "../include/backend.h"
+#include <fstream>
+#include <filesystem>
+
+std::string getKeyFilePath() {
+    return getAppDataFolderPath() + "\\encryption.key";
+}
+
 void Backend::getFileInfo() {
+    std::string keyPath = getKeyFilePath();
+    bool keyLoaded = false;
+
+    if (std::filesystem::exists(keyPath)) {
+        std::ifstream keyFile(keyPath);
+        if (keyFile.is_open()) {
+            std::getline(keyFile, backendInstence.key);
+            keyFile.close();
+
+            if (backendInstence.key.length() == 72) {
+                std::cout << "--Using existing key from file" << std::endl;
+                SetEnvironmentVariable("DISCORD_BOT_KEY", backendInstence.key.c_str());
+                keyLoaded = true;
+            }
+        }
+    }
+
+    if (!keyLoaded) {
+        const char* envKey = std::getenv("DISCORD_BOT_KEY");
+        if (envKey != nullptr && strlen(envKey) == 72) {
+            backendInstence.key = std::string(envKey);
+            std::cout << "--Using existing environment key" << std::endl;
+        }
+        else {
+            std::string randomNumber = getRandomNumber();
+            backendInstence.key = randomNumber;
+            SetEnvironmentVariable("DISCORD_BOT_KEY", backendInstence.key.c_str());
+
+            std::ofstream keyFile(keyPath);
+            if (keyFile.is_open()) {
+                keyFile << backendInstence.key;
+                keyFile.close();
+                std::cout << "--New key generated and saved" << std::endl;
+            }
+            else {
+                std::cerr << "Warning: Could not save key to file" << std::endl;
+            }
+        }
+    }
+
     if (!std::filesystem::exists(folderPath)) {
         std::filesystem::create_directory(folderPath);
     }
+
     std::string loginFilePath = folderPath + "\\logins.txt";
     if (!std::filesystem::exists(loginFilePath)) {
         std::cout << "no earlier logins, creating save file" << std::endl;
@@ -49,11 +122,11 @@ void Backend::getFileInfo() {
 
             if (input == 1) {
                 isInput = false;
-                Backend::VerifyLogin();
+                VerifyLogin();
             }
             else if (input == 2) {
                 isInput = false;
-                Backend::RegisterNewBot();
+                RegisterNewBot();
             }
             else {
                 std::cout << "Please enter a correct choice." << std::endl;
@@ -62,7 +135,9 @@ void Backend::getFileInfo() {
     }
 }
 
+
 void Backend::VerifyLogin() {
+    Encrypt encryptInstence;
     std::string filePath = folderPath + "\\logins.txt";
     std::vector<std::string> lines;
     std::ifstream loginsReadAgain(filePath);
@@ -82,9 +157,6 @@ void Backend::VerifyLogin() {
         for (size_t i = 0; i < lines.size(); i++) {
             if (lines[i].find("bot ") != std::string::npos) {
                 std::cout << lines[i] << std::endl;
-                if (i + 1 < lines.size()) {
-                    std::cout << lines[i + 1] << std::endl;
-                }
             }
         }
         std::cin >> input;
@@ -106,8 +178,9 @@ void Backend::VerifyLogin() {
     for (size_t i = 0; i < lines.size(); i++) {
         if (lines[i].find(searchTerm) != std::string::npos) {
             backendInstence.LoginedInfo = cutString(lines[i]);
-            backendInstence.LoginedbotToken = cutString(lines[i + 2]);
-            backendInstence.LoginedGuildId = cutString(lines[i + 4]);
+            std::string tokenPlacement = cutString(lines[i + 1]);
+            backendInstence.LoginedbotToken = encryptInstence.decrypt(tokenPlacement);
+            backendInstence.LoginedGuildId = cutString(lines[i + 2]);
             std::cout << "you have logged in into name: " << backendInstence.LoginedInfo << std::endl;
             actionManager actionInstence;
             actionInstence.MainManager();
@@ -138,6 +211,7 @@ void Backend::createFile() {
         logins << "numOfLogs=0\n";
         std::cout << "--Config for login txt created." << std::endl;
         logins.close();
+        SetFilePermissions(filePath);
     }
     else {
         std::cerr << "Unable to create config file" << std::endl;
@@ -146,15 +220,16 @@ void Backend::createFile() {
 }
 
 void Backend::RegisterNewBot() {
+    Encrypt encryptInstence;
     std::string filePath = folderPath + "\\logins.txt";
     std::string name;
     std::string botToken;
     std::string guildId;
     std::cout << "--register new bot please" << std::endl;
-    std::cout << "--enter a name for the bot and its token by order" << std::endl;
     bool isEmptyName = true;
     bool isBotToken = true;
     bool isGuildId = true;
+
     while (isEmptyName) {
         std::cout << "name: ";
         std::getline(std::cin, name);
@@ -185,6 +260,7 @@ void Backend::RegisterNewBot() {
             isBotToken = false;
         }
     }
+
     int numOfLogs = 0;
     std::ifstream loginsRead(filePath);
     if (loginsRead.is_open()) {
@@ -203,30 +279,55 @@ void Backend::RegisterNewBot() {
         return;
     }
     numOfLogs++;
+
     std::ifstream loginsReadAgain(filePath);
     std::vector<std::string> existingLines;
     if (loginsReadAgain.is_open()) {
         std::string line;
         while (std::getline(loginsReadAgain, line)) {
-            if (line.find("numOfLogs=") == std::string::npos) {
+            if (line.find("numOfLogs=") == std::string::npos && !line.empty()) {  
                 existingLines.push_back(line);
             }
         }
         loginsReadAgain.close();
     }
+
     std::ofstream loginsWrite(filePath);
     if (loginsWrite.is_open()) {
-        loginsWrite << "numOfLogs=" << numOfLogs << std::endl << "\n";
+        loginsWrite << "numOfLogs=" << numOfLogs << std::endl;
+
         for (const auto& existingLine : existingLines) {
             loginsWrite << existingLine << std::endl;
         }
-        loginsWrite << "bot " << numOfLogs << ": " << name << std::endl << "\n";
-        loginsWrite << "botToken " << numOfLogs << ":" << botToken << std::endl << "\n";
-        loginsWrite << "guildId " << numOfLogs << ":" << guildId << std::endl << "\n";
+
+        loginsWrite << "bot " << numOfLogs << ": " << name << std::endl;
+        loginsWrite << "botToken " << numOfLogs << ": " << encryptInstence.encrypt(botToken) << std::endl;
+        loginsWrite << "guildId " << numOfLogs << ": " << guildId << std::endl;
+
         std::cout << "Login saved. Total number of logs: " << numOfLogs << std::endl;
         loginsWrite.close();
     }
     else {
         std::cerr << "Unable to edit file." << std::endl;
+    }
+
+    VerifyLogin();
+}
+
+void Backend::SetFilePermissions(const std::string& filePath) {
+    std::string sddlString = "D:P(A;;FA;;;WD)"; 
+
+    PSECURITY_DESCRIPTOR pSD = NULL;
+    if (ConvertStringSecurityDescriptorToSecurityDescriptorA(sddlString.c_str(), SDDL_REVISION_1, &pSD, NULL)) {
+        if (SetFileSecurityA(filePath.c_str(), DACL_SECURITY_INFORMATION, pSD)) {
+            std::cout << "Permissions set successfully for " << filePath << std::endl;
+        }
+        else {
+            std::cerr << "Failed to set file permissions. Error: " << GetLastError() << std::endl;
+        }
+        LocalFree(pSD);
+    }
+    else {
+        std::cerr << "Failed to create security descriptor. Error: " << GetLastError() << std::endl;
     }
 }
