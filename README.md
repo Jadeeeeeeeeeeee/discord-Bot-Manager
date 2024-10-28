@@ -67,13 +67,7 @@ And just like that, you have successfully installed the Discord Bot Manager!
 The program is self-explanatory. Simply open the command prompt (CMD) and type `discordbot.exe` to launch the application.
 
 ---
-## How to Update
-If you Are updating from Version 1.0 delete login file in 
-AppData\Roaming\discordBotManagerData
-redownload from the steps above (you dont have to re do the env var again just reinstall in the same place)
-relogin and youre commands will be saved
 
----
 ## FAQ
 
 ### How do I create a bot with its token?
