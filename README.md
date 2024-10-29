@@ -23,7 +23,7 @@ Yes, the Discord Bot Manager is 100% free!
    - get [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022) here.
    
 3. **Download the latest release:**
-   - Go to the [releases page](https://github.com/your-repo/releases) and download the latest ZIP file.
+   - Go to the [releases page](https://github.com/Jadeeeeeeeeeeee/discord-Bot-Manager/releases) and download the latest ZIP file.
 
 4. **Choose your installation location:**
    - You can install it anywhere, but it's recommended to use the `C:` drive for convenience.
